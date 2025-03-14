@@ -1,0 +1,12 @@
+stages:
+  - build
+
+build-generic:
+  stage: build
+  image: golang:1.23
+  before_script:
+    - go mod tidy
+    - go mod download
+  script:
+    - go build -o exe
+    - ./exe
