@@ -9,7 +9,7 @@ import (
 	"github.com/hajimehoshi/go-mp3"
 )
 
-func ProcessFile(filename string) ([]byte, error) {
+func ProcessFile(filename string) ([]int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, errors.New("open file: file not found")
@@ -29,5 +29,11 @@ func ProcessFile(filename string) ([]byte, error) {
 		return nil, errors.New("copy: can't copy decoder output")
 	}
 
-	return buf.Bytes(), nil
+	datas := buf.Bytes()
+	intData := make([]int, len(datas))
+	for i, b := range datas {
+		intData[i] = int(b)
+	}
+
+	return intData, nil
 }
