@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"main/client"
 	"main/pkg"
 )
 
@@ -19,5 +20,11 @@ func main() {
 		log.Fatal("error while mashalling -> ", err)
 	}
 
-	fmt.Println(string(jsonDatas))
+	client := client.CreateClient("https://localhost:7073")
+	resp, err := client.SendMusicByte(jsonDatas)
+	if err != nil {
+		log.Fatal("error while sending http request -> ", err)
+	}
+
+	fmt.Println(resp)
 }
