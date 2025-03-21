@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -12,5 +13,11 @@ func main() {
 	if err != nil {
 		log.Fatal("error during process -> ", err)
 	}
-	fmt.Println(datas)
+
+	jsonDatas, err := json.Marshal(datas)
+	if err != nil {
+		log.Fatal("error while mashalling -> ", err)
+	}
+
+	fmt.Println(string(jsonDatas))
 }
