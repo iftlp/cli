@@ -1,30 +1,34 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
+	"os"
+	"os/exec"
+	"runtime"
 
-	"main/client"
-	"main/pkg"
+	"main/app"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
+func clearScreen() {
+	switch runtime.GOOS {
+	case "windows":
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	default:
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
+}
+
 func main() {
-	datas, err := pkg.ProcessFile("./musics/test_sound_1.mp3")
-	if err != nil {
-		log.Fatal("error during process -> ", err)
+	clearScreen()
+	p := tea.NewProgram(app.NewMenuModel())
+	if err := p.Start(); err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
 	}
-
-	jsonDatas, err := json.Marshal(datas)
-	if err != nil {
-		log.Fatal("error while mashalling -> ", err)
-	}
-
-	client := client.CreateClient("https://localhost:7073")
-	resp, err := client.SendMusicByte(jsonDatas)
-	if err != nil {
-		log.Fatal("error while sending http request -> ", err)
-	}
-
-	fmt.Println(resp)
 }
