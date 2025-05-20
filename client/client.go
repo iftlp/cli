@@ -117,7 +117,7 @@ func (c *Client) SendMusicByte(datas []byte) (resp Response, err error) {
 
 func CreateClient(host string) *Client {
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 100,
 	}
 	return &Client{
 		host:       host,
