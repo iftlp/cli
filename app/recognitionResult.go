@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"main/client"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -16,9 +15,8 @@ type recognitionResultModel struct {
 	filePath string
 	client   client.Client
 
-	loading bool
-	result  string
-	err     error
+	result string
+	err    error
 }
 
 func NewRecognitionResultModel(path string) *recognitionResultModel {
@@ -26,7 +24,6 @@ func NewRecognitionResultModel(path string) *recognitionResultModel {
 	return &recognitionResultModel{
 		filePath: path,
 		client:   *cl,
-		loading:  true,
 	}
 }
 
@@ -44,24 +41,13 @@ func (m *recognitionResultModel) Init() tea.Cmd {
 func (m *recognitionResultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case apiResultMsg:
-		m.loading = false
 		m.result = msg.result
 		m.err = msg.err
-		return m, nil
-	case tea.KeyMsg:
-		if msg.String() == "q" || msg.String() == "ctrl+c" {
-			return m, tea.Quit
-		}
+		return NewMusicInfoModel(m.result), nil
 	}
 	return m, nil
 }
 
 func (m *recognitionResultModel) View() string {
-	if m.loading {
-		return "File selected...\n\nWaiting for API response..."
-	}
-	if m.err != nil {
-		return fmt.Sprintf("Error: %v\n\nPress 'q' to quit.", m.err)
-	}
-	return fmt.Sprintf("API Response:\n\n%s\n\nPress 'q' to quit.", m.result)
+	return "File selected...\n\nWaiting for API response..."
 }
