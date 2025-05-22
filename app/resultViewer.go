@@ -4,37 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"main/model"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type Artist struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
-type Album struct {
-	ID     int     `json:"id"`
-	Title  string  `json:"title"`
-	Cover  string  `json:"cover"`
-	Artist *Artist `json:"artist"`
-}
-
-type Music struct {
-	ID            int      `json:"id"`
-	Title         string   `json:"title"`
-	FilePath      string   `json:"filePath"`
-	DurationInSec int      `json:"durationInSec"`
-	Artists       []Artist `json:"artists"`
-	Album         Album    `json:"album"`
-}
-
 type musicInfoModel struct {
-	music Music
+	music model.Music
 	err   error
 }
 
 func NewMusicInfoModel(jsonString string) *musicInfoModel {
-	var music Music
+	var music model.Music
 	err := json.Unmarshal([]byte(jsonString), &music)
 	if err != nil {
 		return &musicInfoModel{err: err}
