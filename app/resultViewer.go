@@ -3,24 +3,29 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"main/model"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type musicInfoModel struct {
 	music model.Music
+	theme string
 	err   error
 }
 
 func NewMusicInfoModel(jsonString string) *musicInfoModel {
 	var music model.Music
 	err := json.Unmarshal([]byte(jsonString), &music)
+
+	theme := os.Getenv("theme")
 	if err != nil {
-		return &musicInfoModel{err: err}
+		return &musicInfoModel{err: err, theme: theme}
 	}
-	return &musicInfoModel{music: music}
+	return &musicInfoModel{music: music, theme: theme}
 }
 
 func (m *musicInfoModel) Init() tea.Cmd {
@@ -38,8 +43,10 @@ func (m *musicInfoModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *musicInfoModel) View() string {
+	styles := getStyles(m.theme)
+
 	if m.err != nil {
-		return fmt.Sprintf("Error parsing music info: %v\n\nPress 'q' to quit.", m.err)
+		return styles.Error.Render(fmt.Sprintf("Error parsing music info: %v\n\nPress 'q' to quit.", m.err))
 	}
 
 	album := m.music.Album
@@ -48,21 +55,17 @@ func (m *musicInfoModel) View() string {
 		artistName = album.Artist.Name
 	}
 
-	return fmt.Sprintf(
-		"🎵 Music Info\n\n"+
-			"Title:        %s\n"+
-			"Duration:     %ds\n"+
-			"File Path:    %s\n\n"+
-			"💿 Album Info\n"+
-			"Album:        %s\n"+
-			"Cover:        %s\n"+
-			"Artist:       %s\n\n"+
-			"Press 'q' to quit.",
-		m.music.Title,
-		m.music.DurationInSec,
-		m.music.FilePath,
-		album.Title,
-		album.Cover,
-		artistName,
+	return lipgloss.JoinVertical(lipgloss.Left,
+		styles.Title.Render("🎵 Music Info"),
+		fmt.Sprintf("%s %s", styles.Label.Render("Title:"), styles.Value.Render(m.music.Title)),
+		fmt.Sprintf("%s %s", styles.Label.Render("Duration:"), styles.Value.Render(fmt.Sprintf("%ds", m.music.DurationInSec))),
+		fmt.Sprintf("%s %s", styles.Label.Render("File Path:"), styles.Value.Render(m.music.FilePath)),
+
+		styles.Section.Render("💿 Album Info"),
+		fmt.Sprintf("%s %s", styles.Label.Render("Album:"), styles.Value.Render(album.Title)),
+		fmt.Sprintf("%s %s", styles.Label.Render("Cover:"), styles.Value.Render(album.Cover)),
+		fmt.Sprintf("%s %s", styles.Label.Render("Artist:"), styles.Value.Render(artistName)),
+
+		styles.QuitHint.Render("Press 'q' to quit."),
 	)
 }
