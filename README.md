@@ -6,32 +6,47 @@ CLI app to test different components of the Shizima app
 
 - _go 1.21+_
 
-## How to use
+### How to use
 
-> [!WARNING]  
-> Current states isn't advanced at all
-> Things may change often in a quick time span
+#### Installation
 
-### Installation
+after you installed a [version of go](https://go.dev/doc/install)
 
-1. clone the repo  
+1. Clone the repo  
+
 ```sh
 git clone https://gitlab.isima.fr/shizima/clients/cli.git
 ```
 
-2. run the following
+2. Run the following
+
 ```sh
 go mod tidy
 go mod download 
 ```
 
-### Run it
+3. Set config
 
-1. To use the program add the **.mp3** musics you want to decode
+You can change the app config depending on your terminal theme. \
+Open the already existing `shizima.config` file or create it on the project's root folder.
 
-2. Call it like so `test_sound_1.mp3` 
+It should looks like so :
 
-3. Run it
+```json
+{
+    "theme": "light"
+}
+```
+
+The possible values or `dark` or `light`
+
+#### Run it
+
+After your set up is finished you can start the app directly from root folder
+
 ```sh
 go run .
 ```
+
+You will then have to choose the `.wav` file you want to try to recognize. \
+Further explanation on how to use the app are directly displayed inside the app.
