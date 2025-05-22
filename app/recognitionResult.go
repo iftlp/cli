@@ -14,6 +14,7 @@ type apiResultMsg struct {
 type recognitionResultModel struct {
 	filePath string
 	client   client.Client
+	theme    string
 
 	result string
 	err    error
