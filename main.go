@@ -41,7 +41,7 @@ func main() {
 
 	os.Setenv("theme", cfg.Theme)
 
-	p := tea.NewProgram(app.NewMenuModel())
+	p := tea.NewProgram(app.NewBrowserModel())
 	if err := p.Start(); err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(1)
